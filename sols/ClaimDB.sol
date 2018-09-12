@@ -362,17 +362,17 @@ contract ClaimDB is WhiteMange {
         return store_[_claimId].types;
     }
 
-//    /**
-//     * @dev Get pricing for resources
-//     * @param _claimId bytes16 : Resource index(ClaimID)
-//     * @return Pricing of resources
-//     */
-//    function getGoodsPricing(bytes16 _claimId)
-//        view
-//        public
-//        returns(uint256 pricing)
-//    {
-//        return store_[_claimId].pricing;
-//    }
+    /**
+     * @dev Get pricing for resources
+     * @param _claimId bytes16 : Resource index(ClaimID)
+     * @return Pricing of resources
+     */
+    function getClaimPricing(bytes16 _claimId)
+        view
+        public
+        returns(uint256 pricing)
+    {
+        return store_[_claimId].pricing;
+    }
 
 }

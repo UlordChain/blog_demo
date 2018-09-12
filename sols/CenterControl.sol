@@ -37,6 +37,10 @@ contract CenterControl is WhiteMange{
 
     event LogSimpleClaim(address indexed author, string udfs);
 
+    event LogRenewAD(bytes16 claimId, uint256 value);
+    event LogDeductAD(bytes16 claimId, uint256 count);
+
+
     /**
      * @dev constructor
      * @param _pool  address : 押金池地址
@@ -234,6 +238,11 @@ contract CenterControl is WhiteMange{
 
 
     mapping(bytes16 => uint256) public adFee_;
+
+    function getADBalance(bytes16 _cid) public view returns(uint256 balance){
+        return adFee_[_cid];
+    }
+
     function renewAD(bytes16 _cid, uint256 _value) public returns(bool){
         if (whitelist_[msg.sender] != true){
           emit LogError(RScorr.Insufficient);
@@ -246,20 +255,40 @@ contract CenterControl is WhiteMange{
         } //
 
         adFee_[_cid] = adFee_[_cid].add(_value);
+        emit LogRenewAD(_cid, _value);
         return true;
     }
 
-    function deductAdFee(bytes16 _cid, uint256 _value) public returns(bool){
+    function deductAdFee(bytes16 _cid, address[] _addressList) public returns(bool){
         // TODO：需要限制身份
         if(msg.sender != owner && msg.sender != admin){
             emit LogError(RScorr.PermissionDenied);
             return false;
         } // 检查管理员权限
 
-        require(adFee_[_cid] >= _value);
-        adFee_[_cid] = adFee_[_cid].sub(_value);
+        if(claimDb_.getClaimType(_cid) != 2){
+            emit LogError(RScorr.InvalidObj);
+            return false;
+        } // 检查是不是广告.
+
+        // 检查一下余额是否充足
+        uint256 _price = claimDb_.getClaimPricing(_cid);
+        uint256 _amount =  _price.mul(_addressList.length);
+        if(adFee_[_cid] < _amount){
+            emit LogError(RScorr.Insolvent);
+            return false;
+        } // 检查广告余额是否充足
+
+        //结算
+        for(uint256 i = 0; i < _addressList.length; i++){
+            _addressList[i].transfer(_price);
+        }
+
+        adFee_[_cid] = adFee_[_cid].sub(_amount);
+        emit LogDeductAD(_cid, _addressList.length);
         return true;
     }
+
 
     /**
      * @dev 设置发布资源的押金

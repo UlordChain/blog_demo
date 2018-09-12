@@ -476,7 +476,6 @@ def blog_list():
                 print(order is None, blog_dict['type'] != 2)
                 blog_dict.pop("body")
                 blog_dict.pop("udfs")
-        print(blog_dict["claim_id"])
         msg["list"].append(blog_dict)
     return jsonify({
         'result': 1,
@@ -668,6 +667,8 @@ def user_info():
         order = Order.query.filter_by(address=i).all()
         claims = set([Claim.query.filter_by(claim_id=i.claim_id).first() for i in order])
         for claim in claims:
+            if claim is None:
+                continue
             c = claim.to_dict()
             c["order_from_address"] = i
             if username:

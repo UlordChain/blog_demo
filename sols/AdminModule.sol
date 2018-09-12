@@ -134,13 +134,13 @@ contract AdminModule is WhiteMange{
     }
 
 
-    function deductAdFee(address _center, bytes16 _cid, uint256 _value) onlyAdmin
+    function deductAdFee(address _center, bytes16 _cid, address[] _addressList) onlyAdmin
         public
         returns(bool)
     {
         if (isAdmin(_center)){
-            //  "227771c0": "deductAdFee(bytes16,uint256)",
-            require(_center.call(bytes4(0x227771c0), _cid, _value));
+            //   "65b35056": "deductAdFee(bytes16,address[])",
+            require(_center.call(bytes4(0x65b35056), _cid, _addressList));
             return true;
         }else{
             emit LogError(RScorr.PermissionDenied);

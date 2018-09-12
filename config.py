@@ -21,7 +21,8 @@ class BaseConfig(object):
         self.root_private_keys = '93072BA0A53E6DA43526B5728B7D029A5ABE7F0E806A8D7A50CEB43423DF1052'
         self.main_address = "0x035EB55d4260455075A8418C4B94Ba618C445537"
         self.newbie_token = 5000
-        self.provider = "http://testnet.usc.ulord.one:58858"
+        self.provider = "http://192.168.12.231"
+        #"http://testnet.usc.ulord.one:58858"
         # self.provider = "https://rinkeby.infura.io/v3/7226f0ad456a4f1189fee961011684ac"
         self.title_length = 22
         # for solidity

@@ -90,7 +90,8 @@ class UserAddress(db.Model):
 
 class Advertising(db.Model):
     __tablename__ = 'advertising'
-    claim_id = db.Column(db.String(128), primary_key=True, comment='商品id')
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    claim_id = db.Column(db.String(128), comment='商品id')
     price = db.Column(db.Integer, comment='价格')
     initDate = db.Column(db.Integer, comment='创建日期')
     address = db.Column(db.String(128), comment='用户地址')

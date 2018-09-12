@@ -1,0 +1,50 @@
+{
+  "deploy": {
+    "account_address": {
+      "S": "self"
+    },
+    "sortkeys": [
+      "ClaimDB",
+      "InfoDB",
+      "OrderDB",
+      "CenterControl",
+      "AuthorModule",
+      "AdminModule",
+      "MulTransfer",
+      "UserModule"
+    ],
+    "ClaimDB": [["S"],[]],
+    "InfoDB": [["S"],[]],
+    "OrderDB":[["S"],[]],
+    "CenterControl": [["ClaimDB","S"],[]],
+    "AuthorModule": [["CenterControl","InfoDB"],[]],
+    "UserModule": [["CenterControl","InfoDB"],[]],
+    "AdminModule": [["ClaimDB","OrderDB","S"],[]]
+  },
+  "activate": {
+    "ClaimDB": {
+      "mangeWhiteList": [
+        ["CenterControl",true],
+        ["AdminModule",true]
+      ]
+    },
+    "OrderDB": {
+      "mangeWhiteList": [
+        ["CenterControl",true]
+      ]
+    },
+    "InfoDB": {
+      "mangeWhiteList": [
+        ["CenterControl",true]
+      ]
+    },
+    "CenterControl": {
+      "mangeWhiteList": [
+        ["AuthorModule",true],
+        ["UserModule",true]
+      ]
+    }
+  }
+}
+
+

@@ -319,8 +319,11 @@ class ReceiptWatcher(ContentContract):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.listen_list = []
+
         self.running = threading.Thread(target=self.run, args=())
         self.running.start()
+        self.running2 = threading.Thread(target=self.send_pay, args=())
+        self.running2.start()
 
     def background_update(self, method, *args):
         logger.debug(args)
@@ -329,15 +332,28 @@ class ReceiptWatcher(ContentContract):
 
     def run(self, *args):
         while True:
+            try:
+                time.sleep(base_config.receipt_watcher_sleep_time)
+                listen_list = self.query_late
+                self.query_late = self.query_list
+                self.query_list = set()
+                for i in listen_list:
+                    logger.debug("start running")
+                    # func(*param)
+                    logger.debug(i[1])
+                    i[0](*i[1])
+            except Exception as e:
+                logger.error(e)
+
+    def send_pay(self, *args):
+        while True:
             time.sleep(base_config.receipt_watcher_sleep_time)
-            listen_list = self.query_late
-            self.query_late = self.query_list
-            self.query_list = set()
-            for i in listen_list:
-                logger.debug("start running")
-                # func(*param)
-                logger.debug(i[1])
-                i[0](*i[1])
+            ad_count = Advertising.query.filter_by(payment=False).count()
+            print("---" * 50)
+            self.last_send_time = 0
+            if time.time() - self.last_send_time > 20 or ad_count > 200:
+                self.send_pay_user()
+                self.last_send_time = time.time()
 
     def send_newbie_token(self, address):
         receipt = self.func_call("UshareToken", "transfer", [address, base_config.newbie_token])
@@ -414,31 +430,31 @@ class ReceiptWatcher(ContentContract):
             # self.update_claim(None, claim_id)
         return True
 
-    def send_pay_user(self, claim_id):
-        ad = Advertising.query.filter_by(claim_id=claim_id, payment=False).all()
+    def send_pay_user(self):
+
+        ad = Advertising.query.filter_by(payment=False).all()
         a = list(set([i.address for i in ad]))
+        claimId_list = list(set([i.claim_id for i in ad]))
         if len(ad) == 0:
             return True
-        res = self.func_call("CenterControl", "adFee_", [claim_id])
-        c = 0
-        for i in ad:
-            c += i.price
-        if res > c:
-            div = len(a) // 200
-            for i in range(div + 1):
-                j = i * 200
-                print(j, j + 200)
-                res1 = self.func_call("MulTransfer", "mulPaySame", [ad[0].price, a[j:j + 200]])
-                if res1 is False:
-                    logger.error("{} not enough money.".format(claim_id))
-                    return
-            self.func_call("CenterControl", "deductAdFee", [claim_id, c])
-            logger.info("{} send ad fee : {}".format(claim_id, c))
-            Advertising.query.filter_by(claim_id=claim_id, payment=False).update({"payment": True})
-            db.session.commit()
-            return True
-        else:
-            return res
+        for claim_id in claimId_list:
+            res = self.func_call("CenterControl", "getADBalance", [claim_id])
+            print(res)
+            c = 0
+            for i in ad:
+                c += i.price
+            if res > c:
+                div = len(a) // 200
+                for i in range(div + 1):
+                    j = i * 200
+                    self.func_call("CenterControl", "deductAdFee", [claim_id, a[j:j + 200]])
+                logger.info("{} send ad fee : {}".format(claim_id, a[j:j + 200]))
+                Advertising.query.filter_by(claim_id=claim_id, payment=False).update({"payment": True})
+                db.session.commit()
+                return True
+            else:
+                logger.error("not sufficient funds  {}".format(res))
+                return res
 
 
 receipt_watcher = ReceiptWatcher(private_key=base_config.root_private_keys)
