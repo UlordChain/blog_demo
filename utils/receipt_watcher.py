@@ -116,8 +116,6 @@ class ContentContract(object):
     def _nonce(self, value=0, address=None):
         if address is None:
             address = self.account.address
-        # else:
-        #     self.valid_address(address)
         nonce = self.eth.getTransactionCount(address) + value
         return nonce
 
@@ -290,10 +288,10 @@ class ContentContract(object):
             return "Less parameters"
         for i in range(len(inputs)):
             _type = inputs[i].get('type')
-            if _type.endswith("[]"):
-                return "Array arguments are not recommended for command-line input, use http://remix.ethereum.org/ " \
-                       "manually "
-            elif _type in ['uint256', 'uint8']:
+            # if _type.endswith("[]"):
+            #     return "Array arguments are not recommended for command-line input, use http://remix.ethereum.org/ " \
+            #            "manually "
+            if _type in ['uint256', 'uint8']:
                 res[i] = int(param[i])
             elif 'bool' == _type:
                 res[i] = bool(param[i])
@@ -349,9 +347,8 @@ class ReceiptWatcher(ContentContract):
         while True:
             time.sleep(base_config.receipt_watcher_sleep_time)
             ad_count = Advertising.query.filter_by(payment=False).count()
-            print("---" * 50)
-            self.last_send_time = 0
-            if time.time() - self.last_send_time > 20 or ad_count > 200:
+            self.last_send_time = 5
+            if time.time() - self.last_send_time > 15 or ad_count > 200:
                 self.send_pay_user()
                 self.last_send_time = time.time()
 
@@ -433,22 +430,26 @@ class ReceiptWatcher(ContentContract):
     def send_pay_user(self):
 
         ad = Advertising.query.filter_by(payment=False).all()
-        a = list(set([i.address for i in ad]))
+        addr_list = list(set([i.address for i in ad]))
+        addrs=[]
         claimId_list = list(set([i.claim_id for i in ad]))
         if len(ad) == 0:
             return True
         for claim_id in claimId_list:
             res = self.func_call("CenterControl", "getADBalance", [claim_id])
-            print(res)
             c = 0
             for i in ad:
                 c += i.price
             if res > c:
-                div = len(a) // 200
+                div = len(addr_list) // 200
                 for i in range(div + 1):
                     j = i * 200
-                    self.func_call("CenterControl", "deductAdFee", [claim_id, a[j:j + 200]])
-                logger.info("{} send ad fee : {}".format(claim_id, a[j:j + 200]))
+                    s = addr_list[j:j + 200]
+                    for addr in s:
+                        new_addr = ContentContract.valid_address(addr)
+                        addrs.append(new_addr)
+                    transfer = self.func_call("CenterControl", "deductAdFee", [claim_id, addrs])
+                logger.info("{} send ad fee : {}".format(claim_id, s))
                 Advertising.query.filter_by(claim_id=claim_id, payment=False).update({"payment": True})
                 db.session.commit()
                 return True

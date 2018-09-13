@@ -41,6 +41,7 @@ def stop_thread(thread):
 
 
 udfs_utils = ipfsapi.connect(host=base_config.ipfs_host, port=base_config.ipfs_port)
+print(base_config.ipfs_host,base_config.ipfs_port)
 udfs_utils.res = {}
 
 
