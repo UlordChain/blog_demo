@@ -267,7 +267,8 @@ class ContentContract(object):
         func = func() if len(param) == 0 else func(*param)
         # 静态函数
         if function in self.contract[contract_name].view_funcs:
-            return func.call({"from": base_config.main_address})
+            addr=self.valid_address(base_config.main_address)
+            return func.call({"from": addr})
         # 需要上链的函数
         if self.last_tx is None or self.get_for_receipt(self.last_tx) is not None:
             tx = self._build_transaction(func)
@@ -446,8 +447,9 @@ class ReceiptWatcher(ContentContract):
                     j = i * 200
                     s = addr_list[j:j + 200]
                     for addr in s:
-                        new_addr = ContentContract.valid_address(addr)
+                        new_addr = self.valid_address(addr)
                         addrs.append(new_addr)
+                        print(addrs)
                     transfer = self.func_call("CenterControl", "deductAdFee", [claim_id, addrs])
                 logger.info("{} send ad fee : {}".format(claim_id, s))
                 Advertising.query.filter_by(claim_id=claim_id, payment=False).update({"payment": True})

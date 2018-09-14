@@ -4,7 +4,6 @@
 # @Date  : 2018/4/12 0012
 """常用配置"""
 import os
-
 from appdirs import AppDirs
 
 
@@ -18,8 +17,10 @@ class BaseConfig(object):
         self.BLOCK_GAS_LIMIT = 6800000
         self.GAS_LIMIT = 6800000
         # contract will sand token to new user
-        self.root_private_keys = '93072BA0A53E6DA43526B5728B7D029A5ABE7F0E806A8D7A50CEB43423DF1052'
-        self.main_address = "0x035EB55d4260455075A8418C4B94Ba618C445537"
+        self.root_private_keys = '622C5B7B7BC8B728E07F6E04A9FDC5F46EC6273574E06D86AAA66259B3ECDD95'
+        self.main_address = "0x24736c9d1a4bef7483281f914206ba70be08c099"
+        # self.root_private_keys = '93072BA0A53E6DA43526B5728B7D029A5ABE7F0E806A8D7A50CEB43423DF1052'
+        #self.main_address = "0x035EB55d4260455075A8418C4B94Ba618C445537"
         self.newbie_token = 5000
         self.provider = "http://192.168.12.231"
         #"http://testnet.usc.ulord.one:58858"

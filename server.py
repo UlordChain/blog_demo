@@ -703,5 +703,5 @@ if __name__ == '__main__':
     if os.path.isfile(r'DBhelper/sqlite.db') is False:
         db.create_all()
     host_ip = socket.gethostbyname(socket.gethostname())
-    host_ip = "192.168.14.115" if "192.168.96.1" == host_ip else host_ip
+    #host_ip = "172.27.0.48"
     app.run(host=host_ip, port=5000)
