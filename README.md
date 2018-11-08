@@ -1,4 +1,4 @@
-# U-Knowledge[中文](http://192.168.14.240:3000/caolinan/blog_daemon/src/master/README_ch.md)
+# U-Knowledge[中文](https://github.com/UlordChain/blog_demo/blob/master/README_ch.md)
 
 Use ulord platform to create a single blog.
 
