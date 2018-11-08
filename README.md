@@ -1,4 +1,4 @@
-# Good Knowledge[中文](http://192.168.14.240:3000/caolinan/blog_daemon/src/master/README_ch.md)
+# U-Knowledge[中文](http://192.168.14.240:3000/caolinan/blog_daemon/src/master/README_ch.md)
 
 Use ulord platform to create a single blog.
 
@@ -56,7 +56,7 @@ ipfs daemon
 ```
 This is a daemon program.Don't exit!
 
-##### Keep IPFS in the background service
+### Keep IPFS in the background service
 Paste the following code to allow IPFS to automatically restart the service if it fails.
 ```bash
 [Unit]
@@ -76,7 +76,7 @@ systemctl start ipfs
 
 
 
-## run
+## run it
 ```bash
 python server.py
 ```
