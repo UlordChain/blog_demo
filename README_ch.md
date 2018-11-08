@@ -1,4 +1,4 @@
-﻿# 优知[英文版](http://192.168.14.240:3000/caolinan/blog_daemon/src/master/README.md)
+﻿# 优知 [英文版](https://github.com/UlordChain/blog_demo/blob/master/README.md)
 
 一个轻量级的博客，将文章上传至ulord平台并进行定价，其他用户付费查看。所有交易信息均可通过ulord区块浏览器查阅
 
