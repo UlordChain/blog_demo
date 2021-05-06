@@ -20,7 +20,7 @@ eth-rlp==0.1.2
 eth-typing==1.1.0
 eth-utils==1.2.0
 Flask==1.0.2
-Flask-Cors==3.0.6
+Flask-Cors==3.0.9
 Flask-Docs==0.0.7
 Flask-RESTful==0.3.6
 Flask-SQLAlchemy==2.3.2
