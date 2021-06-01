@@ -53,7 +53,7 @@ six==1.11.0
 SQLAlchemy==1.2.11
 toolz==0.9.0
 traitlets==4.3.2
-urllib3==1.23
+urllib3==1.26.5
 wcwidth==0.1.7
 web3==4.5.0
 websockets==5.0.1
