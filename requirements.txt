@@ -45,7 +45,7 @@ Pygments==2.2.0
 PyMySQL==0.9.2
 pypiwin32==223
 pytz==2018.5
-pywin32==223
+pywin32==301
 requests==2.19.1
 rlp==1.0.2
 simplegeneric==0.8.1
